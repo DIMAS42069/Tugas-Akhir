@@ -1,29 +1,24 @@
 <?php
 session_start();
 
-// Jika tidak ada sesi keranjang, redirect ke halaman home
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// Menghitung total harga semua barang di keranjang
 $totalHarga = 0;
 foreach ($_SESSION['cart'] as $item) {
     $totalHarga += $item['total'];
 }
 
-// Fungsi untuk menghapus item dari keranjang
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove'])) {
-    $itemIndex = $_POST['item_index']; // Ambil indeks item dari form
+    $itemIndex = $_POST['item_index'];
     if (isset($_SESSION['cart'][$itemIndex])) {
-        // Kurangi jumlah item jika lebih dari 1
         if ($_SESSION['cart'][$itemIndex]['quantity'] > 1) {
             $_SESSION['cart'][$itemIndex]['quantity']--;
             $_SESSION['cart'][$itemIndex]['total'] = $_SESSION['cart'][$itemIndex]['price'] * $_SESSION['cart'][$itemIndex]['quantity'];
         } else {
-            // Jika jumlah item 1, hapus item dari keranjang
             unset($_SESSION['cart'][$itemIndex]);
-            $_SESSION['cart'] = array_values($_SESSION['cart']); // Re-index array
+            $_SESSION['cart'] = array_values($_SESSION['cart']); 
         }
     }
     header("Location: cart.php");
